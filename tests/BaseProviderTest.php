@@ -4,6 +4,7 @@ namespace yiiunit;
 
 use yiiunit\implementations\Message;
 use yiiunit\implementations\Provider;
+use Yii;
 
 /**
  *
@@ -102,12 +103,47 @@ class BaseProviderTest extends TestCase
         $providerMock->compose('test')->send();
     }
 
-    public function testFileTransport()
+    public function testFileTransportDoesNotThrowError()
     {
         $provider = new Provider([
             'useFileTransport' => true
         ]);
 
         $provider->compose('this is test SMS')->send();
+    }
+
+    public function testFileTransport()
+    {
+        $providerMock = $this->getMockBuilder(Provider::className())->setConstructorArgs([[
+            'useFileTransport' => true
+        ]])->setMethods(['generateMessageFileName'])->getMock();
+
+        $providerMock->expects($this->once())->method('generateMessageFileName')->will($this->returnValue('testfilename1.txt'));
+
+        $message = $providerMock->compose('this is test SMS');
+
+        $this->assertTrue($message->send());
+
+        $file = Yii::getAlias($providerMock->fileTransportPath) . '/testfilename1.txt';
+
+        $this->assertStringEqualsFile($file, $message->toString());
+    }
+
+    public function testFileTransportWithCustomName()
+    {
+        $provider = new Provider([
+            'useFileTransport' => true,
+            'fileTransportCallback' => function () {
+                return 'testfilename2.txt';
+            }
+        ]);
+
+        $message = $provider->compose('this is test SMS');
+
+        $this->assertTrue($message->send());
+
+        $file = Yii::getAlias($provider->fileTransportPath) . '/testfilename2.txt';
+
+        $this->assertStringEqualsFile($file, $message->toString());
     }
 }
