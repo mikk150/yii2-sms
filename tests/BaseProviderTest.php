@@ -2,6 +2,9 @@
 
 namespace yiiunit;
 
+use yiiunit\implementations\Message;
+use yiiunit\implementations\Provider;
+
 /**
  *
  */
@@ -89,74 +92,22 @@ class BaseProviderTest extends TestCase
         $this->assertEquals(2, $count);
     }
 
-    public function test($value='')
+    public function testBeforeSendReturningTrueDoesNotSend()
     {
-        # code...
-    }
-}
+        $providerMock = $this->getMockBuilder(Provider::className())->setMethods(['sendMessage', 'beforeSend'])->getMock();
 
-/**
- * Test Provider class.
- */
-class Provider extends \mikk150\sms\BaseProvider
-{
-    public $messageClass = 'yiiunit\Message';
-    
-    public $sentMessages = [];
-    
-    protected function sendMessage($message)
-    {
-        $this->sentMessages[] = $message;
-        return true;
-    }
-}
+        $providerMock->expects($this->once())->method('beforeSend')->will($this->returnValue(false));
+        $providerMock->expects($this->never())->method('sendMessage')->will($this->returnValue(false));
 
-/**
- * Test Message class.
- */
-class Message extends \mikk150\sms\BaseMessage
-{
-    private $_from;
-    private $_body;
-    private $_to;
-
-    public function getFrom()
-    {
-        return $this->_from;
-    }
-    public function setFrom($from)
-    {
-        $this->_from = $from;
-
-        return $this;
-    }
-    public function getBody()
-    {
-        return $this->_body;
-    }
-    public function setBody($body)
-    {
-        $this->_body = $body;
-
-        return $this;
-    }
-    public function getTo()
-    {
-        return $this->_to;
-    }
-    public function setTo($to)
-    {
-        $this->_to = $to;
-
-        return $this;
+        $providerMock->compose('test')->send();
     }
 
-    public function toString()
+    public function testFileTransport()
     {
-        $provider = $this->provider;
-        $this->provider = null;
-        $s = var_export($this, true);
-        $this->provider = $provider;
-        return $s;
+        $provider = new Provider([
+            'useFileTransport' => true
+        ]);
+
+        $provider->compose('this is test SMS')->send();
     }
 }

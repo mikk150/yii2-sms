@@ -2,6 +2,9 @@
 
 namespace yiiunit;
 
+use yiiunit\implementations\Message;
+use yiiunit\implementations\Provider;
+
 /**
  *
  */
@@ -14,5 +17,10 @@ class BaseMessageTest extends TestCase
         $providerMock->expects($this->once())->method('send')->will($this->returnValue(true));
 
         $providerMock->compose('test')->send();
+    }
+
+    public function testToString()
+    {
+        
     }
 }

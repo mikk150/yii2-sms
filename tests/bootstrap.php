@@ -22,3 +22,4 @@ if (is_file($composerAutoload)) {
 require_once __DIR__ . '/../vendor/yiisoft/yii2/Yii.php';
 
 Yii::setAlias('@yiiunit', __DIR__);
+Yii::setAlias('@runtime', '@yiiunit/runtime');

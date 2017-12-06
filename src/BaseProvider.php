@@ -16,6 +16,7 @@ abstract class BaseProvider extends Component implements ProviderInterface
      * You may set [[SmsEvent::isValid]] to be false to cancel the send.
      */
     const EVENT_BEFORE_SEND = 'beforeSend';
+
     /**
      * @event SmsEvent an event raised right after send.
      */
@@ -35,20 +36,36 @@ abstract class BaseProvider extends Component implements ProviderInterface
      * ```
      */
     public $messageConfig = [];
+
     /**
      * @var string the default class name of the new message instances created by [[createMessage()]]
      */
     public $messageClass = 'mikk150\sms\BaseMessage';
+
     /**
      * @var bool whether to save email messages as files under [[fileTransportPath]] instead of sending them
      * to the actual recipients. This is usually used during development for debugging purpose.
      * @see fileTransportPath
      */
     public $useFileTransport = false;
+
     /**
      * @var string the directory where the email messages are saved when [[useFileTransport]] is true.
      */
     public $fileTransportPath = '@runtime/sms';
+
+    /**
+     * @var callable a PHP callback that will be called by [[send()]] when [[useFileTransport]] is true.
+     * The callback should return a file name which will be used to save the email message.
+     * If not set, the file name will be generated based on the current timestamp.
+     *
+     * The signature of the callback is:
+     *
+     * ```php
+     * function ($mailer, $message)
+     * ```
+     */
+    public $fileTransportCallback;
 
     public function compose($template = null, array $params = [])
     {
@@ -144,6 +161,37 @@ abstract class BaseProvider extends Component implements ProviderInterface
      * @return bool whether the message is sent successfully
      */
     abstract protected function sendMessage($message);
+
+    /**
+     * Saves the message as a file under [[fileTransportPath]].
+     * @param MessageInterface $message
+     * @return bool whether the message is saved successfully
+     */
+    protected function saveMessage($message)
+    {
+        $path = Yii::getAlias($this->fileTransportPath);
+        if (!is_dir($path)) {
+            mkdir($path, 0777, true);
+        }
+        if ($this->fileTransportCallback !== null) {
+            $file = $path . '/' . call_user_func($this->fileTransportCallback, $this, $message);
+        } else {
+            $file = $path . '/' . $this->generateMessageFileName();
+        }
+        file_put_contents($file, $message->toString());
+
+        return true;
+    }
+
+    /**
+     * @return string the file name for saving the message when [[useFileTransport]] is true.
+     */
+    protected function generateMessageFileName()
+    {
+        $time = microtime(true);
+
+        return date('Ymd-His-', $time) . sprintf('%04d', (int) (($time - (int) $time) * 10000)) . '-' . sprintf('%04d', mt_rand(0, 10000)) . '.txt';
+    }
 
     /**
      * This method is invoked right before mail send.
