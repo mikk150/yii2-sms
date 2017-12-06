@@ -5,9 +5,19 @@ namespace yiiunit;
 /**
  *
  */
-class BaseProviderTest extends \PHPUnit_Framework_TestCase
+class BaseProviderTest extends TestCase
 {
     public function testCompose()
+    {
+        $provider = new Provider;
+
+        $message = $provider->compose()->setBody('this is test SMS');
+
+        $this->assertInstanceOf('mikk150\sms\MessageInterface', $message);
+        $this->assertEquals('this is test SMS', $message->getBody());
+    }
+
+    public function testComposeWithText()
     {
         $provider = new Provider;
 
@@ -31,11 +41,57 @@ class BaseProviderTest extends \PHPUnit_Framework_TestCase
 
     public function testSend()
     {
-        $providerMock = $this->getMockBuilder(Provider::className())->setMethods(['send'])->getMock();
+        $providerMock = $this->getMockBuilder(Provider::className())->setMethods(['sendMessage'])->getMock();
 
-        $providerMock->expects($this->once())->method('send')->will($this->returnValue(true));
+        $message = $providerMock->compose('this is test SMS with content {content}', [
+            'content' => 'Test'
+        ]);
+
+        $providerMock->expects($this->once())->method('sendMessage')->will($this->returnValue(true));
 
         $providerMock->compose('test')->send();
+    }
+
+    public function testSendToMultipleRecepients()
+    {
+        $providerMock = $this->getMockBuilder(Provider::className())->setMethods(['sendMessage'])->getMock();
+
+        $message = $providerMock->compose('this is test SMS with content {content}', [
+            'content' => 'Test'
+        ]);
+
+        $providerMock->expects($this->once())->method('sendMessage')->will($this->returnValue(true));
+
+        $providerMock->compose('test')->setTo([123, 223])->send();
+    }
+
+    public function testSendMultipleMessages()
+    {
+        $providerMock = $this->getMockBuilder(Provider::className())->setMethods(['sendMessage'])->getMock();
+
+        $messages = [];
+
+        $messages[] = $providerMock->compose('this is test SMS with content {content}', [
+            'content' => 'Test'
+        ]);
+
+        $messages[] = $providerMock->compose('this is test SMS with content {content}', [
+            'content' => 'Test'
+        ]);
+
+        $providerMock->expects($this->exactly(2))->method('sendMessage')->withConsecutive(
+            [$messages[0]],
+            [$messages[1]]
+        )->will($this->returnValue(true));
+
+        $count = $providerMock->sendMultiple($messages);
+
+        $this->assertEquals(2, $count);
+    }
+
+    public function test($value='')
+    {
+        # code...
     }
 }
 
@@ -71,6 +127,8 @@ class Message extends \mikk150\sms\BaseMessage
     public function setFrom($from)
     {
         $this->_from = $from;
+
+        return $this;
     }
     public function getBody()
     {
@@ -79,6 +137,8 @@ class Message extends \mikk150\sms\BaseMessage
     public function setBody($body)
     {
         $this->_body = $body;
+
+        return $this;
     }
     public function getTo()
     {
@@ -87,6 +147,8 @@ class Message extends \mikk150\sms\BaseMessage
     public function setTo($to)
     {
         $this->_to = $to;
+
+        return $this;
     }
 
     public function toString()

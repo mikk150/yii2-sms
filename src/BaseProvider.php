@@ -103,7 +103,7 @@ abstract class BaseProvider extends Component implements ProviderInterface
         if (is_array($address)) {
             $address = implode(', ', array_keys($address));
         }
-        Yii::info('Sending sms "' . $message->getSubject() . '" to "' . $address . '"', __METHOD__);
+        Yii::info('Sending sms "' . $message->getBody() . '" to "' . $address . '"', __METHOD__);
 
         if ($this->useFileTransport) {
             $isSuccessful = $this->saveMessage($message);
