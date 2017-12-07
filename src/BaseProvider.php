@@ -186,7 +186,7 @@ abstract class BaseProvider extends Component implements ProviderInterface
     /**
      * @return string the file name for saving the message when [[useFileTransport]] is true.
      */
-    protected function generateMessageFileName()
+    public function generateMessageFileName()
     {
         $time = microtime(true);
 

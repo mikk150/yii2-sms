@@ -3,6 +3,8 @@
 namespace mikk150\sms;
 
 use yii\base\BaseObject;
+use yii\base\ErrorHandler;
+use Yii;
 
 /**
  *

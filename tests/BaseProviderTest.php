@@ -103,13 +103,11 @@ class BaseProviderTest extends TestCase
         $providerMock->compose('test')->send();
     }
 
-    public function testFileTransportDoesNotThrowError()
+    public function testMessageFileNameGeneratorReturnsString()
     {
-        $provider = new Provider([
-            'useFileTransport' => true
-        ]);
+        $provider = new Provider;
 
-        $provider->compose('this is test SMS')->send();
+        $this->assertNotEmpty($provider->generateMessageFileName());
     }
 
     public function testFileTransport()
