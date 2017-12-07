@@ -15,7 +15,7 @@ use yii\base\Event;
 class SmsEvent extends Event
 {
     /**
-     * @var MessageInterface the sms message being send.
+     * @var MessageInterface the SMS message being send.
      */
     public $message;
 

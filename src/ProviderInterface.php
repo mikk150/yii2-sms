@@ -18,8 +18,8 @@ interface ProviderInterface
     public function compose($template = null, array $params = []);
 
     /**
-     * Sends the given email message.
-     * @param MessageInterface $message sms message instance to be sent
+     * Sends the given SMS message.
+     * @param MessageInterface $message SMS message instance to be sent
      * @return bool whether the message has been sent successfully
      */
     public function send($message);
@@ -29,7 +29,7 @@ interface ProviderInterface
      *
      * This method may be implemented by some providers which support more efficient way of sending multiple messages in the same batch.
      *
-     * @param array $messages list of messages, which should be sent.
+     * @param MessageInterface[] list of messages, which should be sent.
      * @return int number of messages that are successfully sent.
      */
     public function sendMultiple(array $messages);

@@ -102,12 +102,12 @@ abstract class BaseProvider extends Component implements ProviderInterface
     }
 
     /**
-     * Sends the given sms message.
-     * This method will log a message about the sms being sent.
-     * If [[useFileTransport]] is true, it will save the sms as a file under [[fileTransportPath]].
-     * Otherwise, it will call [[sendMessage()]] to send the sms to its recipient(s).
-     * Child classes should implement [[sendMessage()]] with the actual sms sending logic.
-     * @param MessageInterface $message sms message instance to be sent
+     * Sends the given SMS message.
+     * This method will log a message about the SMS being sent.
+     * If [[useFileTransport]] is true, it will save the SMS as a file under [[fileTransportPath]].
+     * Otherwise, it will call [[sendMessage()]] to send the SMS to its recipient(s).
+     * Child classes should implement [[sendMessage()]] with the actual SMS sending logic.
+     * @param MessageInterface $message SMS message instance to be sent
      * @return bool whether the message has been sent successfully
      */
     public function send($message)
@@ -120,7 +120,7 @@ abstract class BaseProvider extends Component implements ProviderInterface
         if (is_array($address)) {
             $address = implode(', ', array_keys($address));
         }
-        Yii::info('Sending sms "' . $message->getBody() . '" to "' . $address . '"', __METHOD__);
+        Yii::info('Sending SMS "' . $message->getBody() . '" to "' . $address . '"', __METHOD__);
 
         if ($this->useFileTransport) {
             $isSuccessful = $this->saveMessage($message);
@@ -139,7 +139,7 @@ abstract class BaseProvider extends Component implements ProviderInterface
      * Child classes may override this method to implement more efficient way of
      * sending multiple messages.
      *
-     * @param array $messages list of sms messages, which should be sent.
+     * @param array $messages list of SMS messages, which should be sent.
      * @return int number of messages that are successfully sent.
      */
     public function sendMultiple(array $messages)
@@ -198,7 +198,7 @@ abstract class BaseProvider extends Component implements ProviderInterface
      * You may override this method to do last-minute preparation for the message.
      * If you override this method, please make sure you call the parent implementation first.
      * @param MessageInterface $message
-     * @return bool whether to continue sending an sms.
+     * @return bool whether to continue sending an SMS.
      */
     public function beforeSend($message)
     {
