@@ -22,7 +22,7 @@ class BaseMessageTest extends TestCase
     }
 
     /**
-     * @return Mailer test email component instance.
+     * @return Provider test sms component instance.
      */
     protected function createTestSmsComponent()
     {
