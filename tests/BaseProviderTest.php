@@ -103,6 +103,15 @@ class BaseProviderTest extends TestCase
         $providerMock->compose('test')->send();
     }
 
+    public function testAfterSendIsExecuted()
+    {
+        $providerMock = $this->getMockBuilder(Provider::className())->setMethods(['afterSend'])->getMock();
+
+        $providerMock->expects($this->once())->method('afterSend');
+
+        $providerMock->compose('test')->send();
+    }
+
     public function testMessageFileNameGeneratorReturnsString()
     {
         $provider = new Provider;
