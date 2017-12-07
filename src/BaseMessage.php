@@ -19,10 +19,10 @@ abstract class BaseMessage extends BaseObject implements MessageInterface
     public $provider;
 
     /**
-     * Sends this email message.
-     * @param ProviderInterface $mailer the mailer that should be used to send this message.
-     * If no mailer is given it will first check if [[mailer]] is set and if not,
-     * the "mail" application component will be used instead.
+     * Sends this SMS message.
+     * @param ProviderInterface $provider the provider that should be used to send this message.
+     * If no provider is given it will first check if [[provider]] is set and if not,
+     * the "sms" application component will be used instead.
      * @return bool whether this message is sent successfully.
      */
     public function send(ProviderInterface $provider = null)

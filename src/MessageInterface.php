@@ -15,10 +15,7 @@ interface MessageInterface
 
     /**
      * Sets the message sender.
-     * @param string|array $from sender email address.
-     * You may pass an array of addresses if this message is from multiple people.
-     * You may also specify sender name in addition to email address using format:
-     * `[email => name]`.
+     * @param string $from sender name.
      * @return $this self reference.
      */
     public function setFrom($from);
@@ -35,14 +32,14 @@ interface MessageInterface
 
     /**
      * Sets the message recipient(s).
-     * @param string|array $to receiver email address.
+     * @param string|array $to receiver phone number.
      * You may pass an array of addresses if multiple recipients should receive this message.
      * @return $this self reference.
      */
     public function setTo($to);
 
     /**
-     * Sends this email message.
+     * Sends this SMS message.
      * @param ProviderInterface $provider the provider that should be used to send this message.
      * If null, the "sms" application component will be used instead.
      * @return bool whether this message is sent successfully.

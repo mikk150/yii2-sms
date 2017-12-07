@@ -24,7 +24,7 @@ abstract class BaseProvider extends Component implements ProviderInterface
 
     /**
      * @var array the configuration that should be applied to any newly created
-     * email message instance by [[createMessage()]] or [[compose()]]. Any valid property defined
+     * SMS message instance by [[createMessage()]] or [[compose()]]. Any valid property defined
      * by [[MessageInterface]] can be configured, such as `from`, `to`, `body`, etc.
      *
      * For example:
@@ -43,26 +43,26 @@ abstract class BaseProvider extends Component implements ProviderInterface
     public $messageClass = 'mikk150\sms\BaseMessage';
 
     /**
-     * @var bool whether to save email messages as files under [[fileTransportPath]] instead of sending them
+     * @var bool whether to save SMS messages as files under [[fileTransportPath]] instead of sending them
      * to the actual recipients. This is usually used during development for debugging purpose.
      * @see fileTransportPath
      */
     public $useFileTransport = false;
 
     /**
-     * @var string the directory where the email messages are saved when [[useFileTransport]] is true.
+     * @var string the directory where the SMS messages are saved when [[useFileTransport]] is true.
      */
     public $fileTransportPath = '@runtime/sms';
 
     /**
      * @var callable a PHP callback that will be called by [[send()]] when [[useFileTransport]] is true.
-     * The callback should return a file name which will be used to save the email message.
+     * The callback should return a file name which will be used to save the SMS message.
      * If not set, the file name will be generated based on the current timestamp.
      *
      * The signature of the callback is:
      *
      * ```php
-     * function ($mailer, $message)
+     * function ($provider, $message)
      * ```
      */
     public $fileTransportCallback;
@@ -91,7 +91,7 @@ abstract class BaseProvider extends Component implements ProviderInterface
      * of the new message instance.
      * @return MessageInterface message instance.
      */
-    protected function createMessage()
+    public function createMessage()
     {
         $config = $this->messageConfig;
         if (!array_key_exists('class', $config)) {
@@ -156,7 +156,7 @@ abstract class BaseProvider extends Component implements ProviderInterface
 
     /**
      * Sends the specified message.
-     * This method should be implemented by child classes with the actual email sending logic.
+     * This method should be implemented by child classes with the actual SMS sending logic.
      * @param MessageInterface $message the message to be sent
      * @return bool whether the message is sent successfully
      */
@@ -194,7 +194,7 @@ abstract class BaseProvider extends Component implements ProviderInterface
     }
 
     /**
-     * This method is invoked right before mail send.
+     * This method is invoked right before SMS send.
      * You may override this method to do last-minute preparation for the message.
      * If you override this method, please make sure you call the parent implementation first.
      * @param MessageInterface $message
@@ -209,8 +209,8 @@ abstract class BaseProvider extends Component implements ProviderInterface
     }
 
     /**
-     * This method is invoked right after mail was send.
-     * You may override this method to do some postprocessing or logging based on mail send status.
+     * This method is invoked right after SMS was sent.
+     * You may override this method to do some postprocessing or logging based on SMS send status.
      * If you override this method, please make sure you call the parent implementation first.
      * @param MessageInterface $message
      * @param bool $isSuccessful
