@@ -20,8 +20,17 @@ interface MessageInterface
      */
     public function setFrom($from);
 
+    /**
+     * Returns the message.
+     * @return string the message
+     */
     public function getBody();
 
+    /**
+     * Sets the message.
+     * @param string $body the message.
+     * @return $this self reference.
+     */
     public function setBody($body);
 
     /**
